@@ -65,22 +65,23 @@ if (-not (Test-Path $projPath)) {
     exit 1
 }
 
-# Check for changes
+# Check for changes - iterate on project files (not xlib) to also detect new files
+$projXlibFiles = Get-ChildItem (Join-Path $projPath "xLib_*.pde") -File | Select-Object -ExpandProperty Name | Sort-Object
+
 $changedFiles = @()
-foreach ($file in $xlibFiles) {
+foreach ($file in $projXlibFiles) {
     $srcFile = Join-Path $projPath $file
     $dstFile = Join-Path $xlibDir $file
-    
-    if (Test-Path $srcFile) {
-        $srcHash = (Get-FileHash $srcFile).Hash
-        $dstHash = if (Test-Path $dstFile) { (Get-FileHash $dstFile).Hash } else { "" }
-        
-        if ($srcHash -ne $dstHash) {
-            $changedFiles += @{
-                File = $file
-                Source = $srcFile
-                Dest = $dstFile
-            }
+
+    $srcHash = (Get-FileHash $srcFile).Hash
+    $dstHash = if (Test-Path $dstFile) { (Get-FileHash $dstFile).Hash } else { "" }
+
+    if ($srcHash -ne $dstHash) {
+        $label = if (-not (Test-Path $dstFile)) { "$file  [NEW]" } else { $file }
+        $changedFiles += @{
+            File   = $label
+            Source = $srcFile
+            Dest   = $dstFile
         }
     }
 }
