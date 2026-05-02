@@ -3,7 +3,7 @@
 
 # Liste des noms de projets (ordre pour le menu interactif)
 # Les chemins se construisent automatiquement à partir de ces noms
-$projectNames = @("spiral", "perlin_mountains", "image_processor", "gravity", "image_dots")
+$projectNames = @("spiral", "perlin_mountains", "image_lines", "gravity", "image_dots")
 
 # Construire les chemins automatiquement depuis les noms
 $projectPaths = @{}
